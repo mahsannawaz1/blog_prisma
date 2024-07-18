@@ -37,14 +37,15 @@ model Post {
 }
 
 model Comment {
-  id            String   @id @default(auto()) @map("_id") @db.ObjectId
-  title         String
-  content       String
-  commentedAt   DateTime @default(now())
-  commentedPost String   @db.ObjectId
-  commentedBy   String   @db.ObjectId
-  user          User     @relation(fields: [commentedBy], references: [id])
-  post          Post     @relation(fields: [commentedPost], references: [id])
+  id              String   @id @default(auto()) @map("_id") @db.ObjectId
+  title           String
+  content         String
+  parentCommentId String?  @db.ObjectId
+  commentedAt     DateTime @default(now())
+  commentedPost   String   @db.ObjectId
+  commentedBy     String   @db.ObjectId
+  user            User     @relation(fields: [commentedBy], references: [id])
+  post            Post     @relation(fields: [commentedPost], references: [id])
 }
 
 model Like {

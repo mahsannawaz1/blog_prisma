@@ -25,7 +25,12 @@ module.exports = async (req, res) => {
     }
   })
   if (like) {
-    return res.status(400).json({error:'User already liked the post'})
+    await prisma.like.delete({
+      where: {
+        id:like.id
+      }
+    })
+    return res.status(204).json({message:'Like is removed.'})
   }
   try {
     // const like = Like({
