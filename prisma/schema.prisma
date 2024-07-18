@@ -1,0 +1,56 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String    @id @default(auto()) @map("_id") @db.ObjectId
+  username  String
+  email     String    @unique
+  password  String
+  profile   String
+  createdAt DateTime  @default(now())
+  posts     Post[]
+  comments  Comment[]
+  likes     Like[]
+}
+
+model Post {
+  id       String    @id @default(auto()) @map("_id") @db.ObjectId
+  title    String
+  content  String
+  image    String
+  postedBy String    @db.ObjectId
+  user     User      @relation(fields: [postedBy], references: [id])
+  comments Comment[]
+  likes    Like[]
+}
+
+model Comment {
+  id            String   @id @default(auto()) @map("_id") @db.ObjectId
+  title         String
+  content       String
+  commentedAt   DateTime @default(now())
+  commentedPost String   @db.ObjectId
+  commentedBy   String   @db.ObjectId
+  user          User     @relation(fields: [commentedBy], references: [id])
+  post          Post     @relation(fields: [commentedPost], references: [id])
+}
+
+model Like {
+  id        String @id @default(auto()) @map("_id") @db.ObjectId
+  likedPost String @db.ObjectId
+  likedBy   String @db.ObjectId
+  user      User   @relation(fields: [likedBy], references: [id])
+  post      Post   @relation(fields: [likedPost], references: [id])
+}
